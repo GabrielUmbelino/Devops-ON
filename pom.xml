@@ -11,6 +11,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+		<packaging>jar</packaging>
+
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -61,7 +63,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/GabrielUmbelino/Devops-ON</url>
+		</repository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
