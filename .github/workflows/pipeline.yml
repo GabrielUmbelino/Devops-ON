@@ -7,12 +7,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Package
-      run: mvn package
+      - name: Package
+        run: mvn package
 
   publish:
     runs-on: ubuntu-latest
@@ -24,11 +24,50 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'adopt'
-          package: '*.jar'
+          java-version: "11"
+          distribution: "adopt"
+          package: "*.jar"
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-STG:
+    runs-on: ubuntu-latest
+    environment:
+      name: stg
+    needs: publish
+
+    if: github.ref == 'refs/heads/development'
+    steps:
+      - name: Deploy
+        shell: bash
+        run: |
+          echo "Deploy STG"
+
+  deploy-PRE:
+    runs-on: ubuntu-latest
+    environment:
+      name: pre
+    needs: publish
+
+    if: github.ref == 'refs/heads/release'
+    steps:
+      - name: Deploy
+        shell: bash
+        run: |
+          echo "Deploy PRE"
+
+  deploy-PROD:
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+    needs: publish
+
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy
+        shell: bash
+        run: |
+          echo "Deploy PROD"
+
